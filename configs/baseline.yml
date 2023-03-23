@@ -1,0 +1,63 @@
+MODEL:
+  PRETRAIN_CHOICE: 'imagenet'
+  PRETRAIN_PATH: '/mnt/data/lmm/baseline/pretrain-models/'
+  CENTER_LOSS: 'off'
+  CENTER_FEAT_DIM: 2048
+  NAME: 'resnet50'   # densenet121 / resnet50
+  POOLING_TYPE: 'general'
+  CROSSMODEITY: False
+  APP_CE_LOSS: 'off'
+  TRIPLET_LOSS: 'off' # weight / normal / off
+
+INPUT:
+  IMG_SIZE: [256, 128] # [224, 224] [256, 128] [384, 192]
+  PROB: 0.5 # random horizontal flip
+  RE_PROB: 0.5 # random erasing
+  PADDING: 10
+
+DATASETS:
+  NAMES: ('market1501')
+  ROOT_DIR: ('/mnt/data/datasets')
+
+DATALOADER:
+  SAMPLER: 'pk'
+  NUM_INSTANCE: 8
+  NUM_WORKERS: 8
+  USE_TRANSFORMER: True
+
+
+SOLVER:
+  OPTIMIZER_NAME: 'Adam'
+  MAX_EPOCHS: 120                   # 120     100     80      60
+  CHECKPOINT_PERIOD: 6             # 12      10      8       6
+  BASE_LR: 0.00035
+
+  CENTER_LR: 0.5
+  CENTER_LOSS_WEIGHT: 0.0005
+  MAT_LOSS_WEIGHT: 1.0
+  APCE_LOSS_WEIGHT: 0.2
+
+  WEIGHT_DECAY: 0.0005
+  IMS_PER_BATCH: 64
+
+  STEPS: [30,60,90]                 # [40, 70]   [30,60,90]
+  GAMMA: 0.1
+
+  DELAY_EPOCHS: 10
+  ETA_MIN_LR: 0.000001
+
+  SCHED: 'MultiStepLR'              # MultiStepLR     CosineAnnealingLR
+  WARMUP_FACTOR: 0.01
+  WARMUP_ITERS: 10                      # 10              2000
+  WARMUP_METHOD: 'linear'
+
+  LOG_PERIOD: 200
+  EVAL_PERIOD: 40
+
+TEST:
+  IMS_PER_BATCH: 64
+  RE_RANKING: 'off'
+  WEIGHT: "path"
+  FEAT_NORM: 'on'
+
+OUTPUT_DIR: "./log/market1501/Experiment-AGW-baseline"
